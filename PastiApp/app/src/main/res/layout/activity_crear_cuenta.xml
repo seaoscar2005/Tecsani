@@ -22,8 +22,8 @@
 
     <EditText
         android:id="@+id/editTextText"
-        android:layout_width="408dp"
-        android:layout_height="66dp"
+        android:layout_width="392dp"
+        android:layout_height="71dp"
         android:ems="10"
         android:text="Nombre"
         android:textSize="24sp"
@@ -36,7 +36,7 @@
 
     <EditText
         android:id="@+id/editTextText2"
-        android:layout_width="407dp"
+        android:layout_width="388dp"
         android:layout_height="62dp"
         android:ems="10"
         android:inputType="text"
@@ -63,8 +63,8 @@
 
     <EditText
         android:id="@+id/editTextDate2"
-        android:layout_width="407dp"
-        android:layout_height="60dp"
+        android:layout_width="394dp"
+        android:layout_height="63dp"
         android:ems="10"
         android:inputType="date"
         android:textSize="24sp"
