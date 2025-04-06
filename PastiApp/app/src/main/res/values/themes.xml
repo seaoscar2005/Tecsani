@@ -6,4 +6,10 @@
     </style>
 
     <style name="Theme.PastiApp" parent="Base.Theme.PastiApp" />
+    <style name="Theme.PastiApp.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+    <style name="Theme.PastiApp.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style name="Theme.PastiApp.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>

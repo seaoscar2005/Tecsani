@@ -31,5 +31,15 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        // Este es el nuevo botón
+        Button btnIrPaginaInicio = findViewById(R.id.button9);
+        btnIrPaginaInicio.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, Pagina_Inicio.class);
+                startActivity(intent);
+            }
+        });
     }
 }
