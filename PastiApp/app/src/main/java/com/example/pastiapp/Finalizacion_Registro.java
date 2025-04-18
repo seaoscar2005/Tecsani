@@ -12,19 +12,20 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
-public class Crear_Cuenta5 extends AppCompatActivity {
+public class Finalizacion_Registro extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_crear_cuenta5);
+        setContentView(R.layout.activity_finalizacion_registro);
 
-        Button btnConfigurarDispositivo = findViewById(R.id.button8);
-        btnConfigurarDispositivo.setOnClickListener(new View.OnClickListener() {
+        Button btnIrPaginaInicio = findViewById(R.id.button34);
+        btnIrPaginaInicio.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(Crear_Cuenta5.this, Configurar_Dispositivo.class);
+                Intent intent = new Intent(Finalizacion_Registro.this, Pagina_Inicio.class);
                 startActivity(intent);
+                finish(); // Opcional: para cerrar esta pantalla y que no puedan regresar con "Back"
             }
         });
     }

@@ -6,12 +6,33 @@
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/iconpastiplus"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/iconpastiplus"
         android:supportsRtl="true"
         android:theme="@style/Theme.PastiApp"
         tools:targetApi="31">
+        <activity
+            android:name=".Configuracion"
+            android:exported="false" />
+        <activity
+            android:name=".Finalizacion_Registro"
+            android:exported="false" />
+        <activity
+            android:name=".Configurar_Dispositivo"
+            android:exported="false" />
+        <activity
+            android:name=".Personalizacion_Dispositivo"
+            android:exported="false" />
+        <activity
+            android:name=".Agenda"
+            android:exported="false" />
+        <activity
+            android:name=".Mi_Informacion"
+            android:exported="false" />
+        <activity
+            android:name=".Medicamentos"
+            android:exported="false" />
         <activity
             android:name=".Calendario"
             android:exported="false" />

@@ -1,0 +1,54 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group>
+
+        <item
+            android:id="@+id/nav_inicio"
+
+            android:title="Página Principal" />
+
+        <item
+            android:id="@+id/nav_pasti"
+
+            android:title="Mi Pasti+" />
+
+        <item
+            android:id="@+id/nav_agenda"
+
+            android:title="Agenda" />
+
+        <item
+            android:id="@+id/nav_calendario"
+
+            android:title="Calendario" />
+
+        <item
+            android:id="@+id/nav_medicamentos"
+
+            android:title="Mis medicamentos" />
+
+        <item
+            android:id="@+id/nav_dispositivo"
+
+            android:title="Mi Dispositivo" />
+
+        <item
+            android:id="@+id/nav_info"
+
+            android:title="Mi información" />
+
+        <item
+            android:id="@+id/nav_config"
+
+            android:title="Configuración" />
+
+        <item
+            android:id="@+id/nav_soporte"
+
+            android:title="Soporte técnico" />
+
+    </group>
+
+    <!-- Aquí el Switch personalizado estará en el header, no en el menú directamente -->
+
+</menu>

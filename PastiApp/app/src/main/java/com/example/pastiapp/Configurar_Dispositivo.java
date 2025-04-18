@@ -12,18 +12,18 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
-public class Crear_Cuenta5 extends AppCompatActivity {
+public class Configurar_Dispositivo extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_crear_cuenta5);
+        setContentView(R.layout.activity_configurar_dispositivo);
 
-        Button btnConfigurarDispositivo = findViewById(R.id.button8);
-        btnConfigurarDispositivo.setOnClickListener(new View.OnClickListener() {
+        Button btnFinalizarRegistro = findViewById(R.id.button33);
+        btnFinalizarRegistro.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(Crear_Cuenta5.this, Configurar_Dispositivo.class);
+                Intent intent = new Intent(Configurar_Dispositivo.this, Finalizacion_Registro.class);
                 startActivity(intent);
             }
         });
