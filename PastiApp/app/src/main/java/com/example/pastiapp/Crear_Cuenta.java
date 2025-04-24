@@ -13,6 +13,8 @@ import android.widget.Button;
 
 public class Crear_Cuenta extends AppCompatActivity {
 
+    
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,5 +28,8 @@ public class Crear_Cuenta extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+
     }
+
 }
