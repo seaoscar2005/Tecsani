@@ -11,4 +11,22 @@
     <string name="menu_home">Home</string>
     <string name="menu_gallery">Gallery</string>
     <string name="menu_slideshow">Slideshow</string>
+
+    <string-array name="tipos_medicamentos">
+        <item>Pastillas</item>
+        <item>Cápsulas</item>
+        <item>Supositorios</item>
+        <item>Jarabe</item>
+        <item>Soluciones</item>
+        <item>Suspensiones</item>
+        <item>Emulsiones</item>
+        <item>Inyecciones</item>
+    </string-array>
+
+    <string-array name="unidades_dosis">
+        <item>mg</item>
+        <item>ml</item>
+    </string-array>
+
+
 </resources>

@@ -66,8 +66,8 @@
         <!-- Botón "+" para agregar -->
         <Button
             android:id="@+id/buttonAdd"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
             android:text="+"
             android:textSize="24sp"
             android:textColor="@android:color/white"
