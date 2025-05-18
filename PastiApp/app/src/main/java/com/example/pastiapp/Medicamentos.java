@@ -11,8 +11,16 @@ import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.navigation.NavigationView;
+import android.content.SharedPreferences;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 
 public class Medicamentos extends AppCompatActivity {
 
@@ -20,6 +28,11 @@ public class Medicamentos extends AppCompatActivity {
     private NavigationView navigationView;
     private Button button12;
     private Button buttonAdd;
+
+    // NUEVO: RecyclerView y lista
+    private RecyclerView recyclerView;
+    private MedicamentoAdapter adapter;
+    private ArrayList<Medicamento> listaMedicamentos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,8 +45,31 @@ public class Medicamentos extends AppCompatActivity {
         buttonAdd = findViewById(R.id.buttonAdd);
 
         button12.setOnClickListener(v -> drawerLayout.openDrawer(GravityCompat.START));
-
         buttonAdd.setOnClickListener(v -> mostrarFormularioMedicamento());
+
+        // NUEVO: Configuración del RecyclerView
+        recyclerView = findViewById(R.id.recyclerMedicamentos);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        listaMedicamentos = cargarMedicamentos();
+
+        adapter = new MedicamentoAdapter(listaMedicamentos, new MedicamentoAdapter.OnItemClickListener() {
+            @Override
+            public void onEditar(int position) {
+                Toast.makeText(Medicamentos.this, "Editar: " + listaMedicamentos.get(position).getNombre(), Toast.LENGTH_SHORT).show();
+                // Próximo paso: abrir formulario en modo edición
+            }
+
+            @Override
+            public void onEliminar(int position) {
+                listaMedicamentos.remove(position);
+                guardarListaActualizada();
+                adapter.notifyItemRemoved(position);
+            }
+        });
+
+        recyclerView.setAdapter(adapter);
 
         navigationView.setNavigationItemSelectedListener(item -> {
             int id = item.getItemId();
@@ -77,7 +113,6 @@ public class Medicamentos extends AppCompatActivity {
         Spinner spinnerUnidad = bottomSheetView.findViewById(R.id.spinnerUnidad);
         Button btnGuardar = bottomSheetView.findViewById(R.id.btnGuardar);
 
-        // Adaptadores
         ArrayAdapter<CharSequence> adapterTipo = ArrayAdapter.createFromResource(this,
                 R.array.tipos_medicamentos, android.R.layout.simple_spinner_item);
         adapterTipo.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -88,7 +123,6 @@ public class Medicamentos extends AppCompatActivity {
         adapterUnidad.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerUnidad.setAdapter(adapterUnidad);
 
-        // Función para validar los campos y activar botón
         Runnable validarFormulario = () -> {
             boolean completo = !editNombre.getText().toString().trim().isEmpty()
                     && !editDosis.getText().toString().trim().isEmpty()
@@ -102,7 +136,6 @@ public class Medicamentos extends AppCompatActivity {
             ));
         };
 
-        // Eventos de cambio para validación
         TextWatcher watcher = new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
             @Override public void afterTextChanged(Editable s) {}
@@ -129,7 +162,6 @@ public class Medicamentos extends AppCompatActivity {
             public void onNothingSelected(AdapterView<?> parent) {}
         });
 
-        // Acción del botón guardar
         btnGuardar.setOnClickListener(v -> {
             if (btnGuardar.isEnabled()) {
                 String nombre = editNombre.getText().toString().trim();
@@ -138,15 +170,20 @@ public class Medicamentos extends AppCompatActivity {
                 String fecha = editFechaCaducidad.getText().toString().trim();
                 String tipo = spinnerTipo.getSelectedItem().toString();
 
-                // Aquí se puede guardar en la base de datos
-                Toast.makeText(Medicamentos.this, "Medicamento guardado", Toast.LENGTH_SHORT).show();
+                Medicamento nuevoMedicamento = new Medicamento(nombre, dosis, unidad, fecha, tipo);
+                guardarMedicamento(nuevoMedicamento);
+
+                // Actualiza RecyclerView en tiempo real
+                listaMedicamentos.add(nuevoMedicamento);
+                adapter.notifyItemInserted(listaMedicamentos.size() - 1);
+
+                Toast.makeText(Medicamentos.this, "Guardado: " + nuevoMedicamento.getNombre(), Toast.LENGTH_SHORT).show();
                 bottomSheetDialog.dismiss();
             } else {
                 Toast.makeText(Medicamentos.this, "Por favor, completa todos los campos", Toast.LENGTH_SHORT).show();
             }
         });
 
-        // Mostrar el diálogo
         bottomSheetDialog.setContentView(bottomSheetView);
         bottomSheetDialog.show();
     }
@@ -158,5 +195,45 @@ public class Medicamentos extends AppCompatActivity {
         } else {
             super.onBackPressed();
         }
+    }
+
+    private void guardarMedicamento(Medicamento nuevoMedicamento) {
+        SharedPreferences prefs = getSharedPreferences("medicamentos", MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+
+        Gson gson = new Gson();
+        String jsonGuardado = prefs.getString("lista", null);
+
+        ArrayList<Medicamento> lista;
+
+        if (jsonGuardado != null) {
+            Type tipoLista = new TypeToken<ArrayList<Medicamento>>() {}.getType();
+            lista = gson.fromJson(jsonGuardado, tipoLista);
+        } else {
+            lista = new ArrayList<>();
+        }
+
+        lista.add(nuevoMedicamento);
+        String jsonNuevo = gson.toJson(lista);
+        editor.putString("lista", jsonNuevo);
+        editor.apply();
+    }
+
+    private ArrayList<Medicamento> cargarMedicamentos() {
+        SharedPreferences prefs = getSharedPreferences("medicamentos", MODE_PRIVATE);
+        String json = prefs.getString("lista", null);
+        Gson gson = new Gson();
+        Type tipoLista = new TypeToken<ArrayList<Medicamento>>() {}.getType();
+        ArrayList<Medicamento> lista = gson.fromJson(json, tipoLista);
+        return (lista != null) ? lista : new ArrayList<>();
+    }
+
+    private void guardarListaActualizada() {
+        SharedPreferences prefs = getSharedPreferences("medicamentos", MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        Gson gson = new Gson();
+        String json = gson.toJson(listaMedicamentos);
+        editor.putString("lista", json);
+        editor.apply();
     }
 }
