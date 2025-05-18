@@ -46,8 +46,9 @@
             android:layout_marginTop="92dp"
             android:clipToPadding="false"
             android:padding="10dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:layout_editor_absoluteX="3dp"
             tools:listitem="@layout/medicamento_item" />
 
         <Button

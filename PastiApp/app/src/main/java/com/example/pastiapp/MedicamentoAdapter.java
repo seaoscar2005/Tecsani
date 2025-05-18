@@ -1,12 +1,11 @@
 package com.example.pastiapp;
 
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -14,12 +13,11 @@ import java.util.ArrayList;
 public class MedicamentoAdapter extends RecyclerView.Adapter<MedicamentoAdapter.ViewHolder> {
 
     public interface OnItemClickListener {
-        void onEditar(int position);
-        void onEliminar(int position);
+        void onItemClick(int position);
     }
 
-    private ArrayList<Medicamento> lista;
-    private OnItemClickListener listener;
+    private final ArrayList<Medicamento> lista;
+    private final OnItemClickListener listener;
 
     public MedicamentoAdapter(ArrayList<Medicamento> lista, OnItemClickListener listener) {
         this.lista = lista;
@@ -27,39 +25,41 @@ public class MedicamentoAdapter extends RecyclerView.Adapter<MedicamentoAdapter.
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView tvNombre, tvDosis, tvFecha;
-        public ImageButton btnEditar, btnEliminar;
+        private final TextView tvNombre, tvDosis, tvFecha;
 
-        public ViewHolder(View itemView) {
+        public ViewHolder(@NonNull View itemView, OnItemClickListener listener) {
             super(itemView);
             tvNombre = itemView.findViewById(R.id.tvNombre);
             tvDosis = itemView.findViewById(R.id.tvDosis);
             tvFecha = itemView.findViewById(R.id.tvFecha);
-            btnEditar = itemView.findViewById(R.id.btnEditar);
-            btnEliminar = itemView.findViewById(R.id.btnEliminar);
+
+            itemView.setOnClickListener(view -> {
+                int position = getAdapterPosition();
+                if (listener != null && position != RecyclerView.NO_POSITION) {
+                    listener.onItemClick(position);
+                }
+            });
         }
 
-        public void bind(Medicamento medicamento, OnItemClickListener listener, int position) {
+        public void bind(Medicamento medicamento) {
             tvNombre.setText(medicamento.getNombre());
             tvDosis.setText("Dosis: " + medicamento.getDosis() + " " + medicamento.getUnidad());
-            tvFecha.setText("Fecha: " + medicamento.getFecha());
-
-            btnEditar.setOnClickListener(v -> listener.onEditar(position));
-            btnEliminar.setOnClickListener(v -> listener.onEliminar(position));
+            tvFecha.setText("Fecha de vencimiento: " + medicamento.getFecha());
         }
     }
 
+    @NonNull
     @Override
-    public MedicamentoAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.medicamento_item, parent, false);
-        return new ViewHolder(view);
+        return new ViewHolder(view, listener);
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Medicamento medicamento = lista.get(position);
-        holder.bind(medicamento, listener, position);
+        holder.bind(medicamento);
     }
 
     @Override

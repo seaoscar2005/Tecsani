@@ -8,6 +8,7 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.*;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -29,7 +30,6 @@ public class Medicamentos extends AppCompatActivity {
     private Button button12;
     private Button buttonAdd;
 
-    // NUEVO: RecyclerView y lista
     private RecyclerView recyclerView;
     private MedicamentoAdapter adapter;
     private ArrayList<Medicamento> listaMedicamentos;
@@ -45,55 +45,27 @@ public class Medicamentos extends AppCompatActivity {
         buttonAdd = findViewById(R.id.buttonAdd);
 
         button12.setOnClickListener(v -> drawerLayout.openDrawer(GravityCompat.START));
-        buttonAdd.setOnClickListener(v -> mostrarFormularioMedicamento());
+        buttonAdd.setOnClickListener(v -> mostrarFormularioAgregar());
 
-        // NUEVO: Configuración del RecyclerView
         recyclerView = findViewById(R.id.recyclerMedicamentos);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         listaMedicamentos = cargarMedicamentos();
 
-        adapter = new MedicamentoAdapter(listaMedicamentos, new MedicamentoAdapter.OnItemClickListener() {
-            @Override
-            public void onEditar(int position) {
-                Toast.makeText(Medicamentos.this, "Editar: " + listaMedicamentos.get(position).getNombre(), Toast.LENGTH_SHORT).show();
-                // Próximo paso: abrir formulario en modo edición
-            }
-
-            @Override
-            public void onEliminar(int position) {
-                listaMedicamentos.remove(position);
-                guardarListaActualizada();
-                adapter.notifyItemRemoved(position);
-            }
-        });
-
+        adapter = new MedicamentoAdapter(listaMedicamentos, position -> mostrarFormularioEditar(position));
         recyclerView.setAdapter(adapter);
 
         navigationView.setNavigationItemSelectedListener(item -> {
             int id = item.getItemId();
-
-            if (id == R.id.nav_inicio) {
-                startActivity(new Intent(this, Pagina_Inicio.class));
-            } else if (id == R.id.nav_pasti) {
-                startActivity(new Intent(Medicamentos.this, Personalizacion_Dispositivo.class));
-            } else if (id == R.id.nav_agenda) {
-                startActivity(new Intent(Medicamentos.this, Agenda.class));
-            } else if (id == R.id.nav_calendario) {
-                startActivity(new Intent(Medicamentos.this, Calendario.class));
-            } else if (id == R.id.nav_medicamentos) {
-                // Ya estás aquí
-            } else if (id == R.id.nav_dispositivo) {
-                startActivity(new Intent(Medicamentos.this, Mi_Dispositivo.class));
-            } else if (id == R.id.nav_info) {
-                startActivity(new Intent(Medicamentos.this, Mi_Informacion.class));
-            } else if (id == R.id.nav_config) {
-                startActivity(new Intent(Medicamentos.this, Configuracion.class));
-            } else if (id == R.id.nav_soporte) {
-                Intent navegador = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.tu-pagina-de-soporte.com"));
-                startActivity(navegador);
-            }
+            if (id == R.id.nav_inicio) startActivity(new Intent(this, Pagina_Inicio.class));
+            else if (id == R.id.nav_pasti) startActivity(new Intent(this, Personalizacion_Dispositivo.class));
+            else if (id == R.id.nav_agenda) startActivity(new Intent(this, Agenda.class));
+            else if (id == R.id.nav_calendario) startActivity(new Intent(this, Calendario.class));
+            else if (id == R.id.nav_dispositivo) startActivity(new Intent(this, Mi_Dispositivo.class));
+            else if (id == R.id.nav_info) startActivity(new Intent(this, Mi_Informacion.class));
+            else if (id == R.id.nav_config) startActivity(new Intent(this, Configuracion.class));
+            else if (id == R.id.nav_soporte) startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.tu-pagina-de-soporte.com")));
 
             item.setChecked(false);
             drawerLayout.closeDrawer(GravityCompat.START);
@@ -101,91 +73,108 @@ public class Medicamentos extends AppCompatActivity {
         });
     }
 
-    private void mostrarFormularioMedicamento() {
-        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
-        View bottomSheetView = LayoutInflater.from(getApplicationContext())
-                .inflate(R.layout.bottom_sheet_medicamento, null);
+    private void mostrarFormularioAgregar() {
+        BottomSheetDialog dialog = new BottomSheetDialog(this);
+        View view = LayoutInflater.from(this).inflate(R.layout.bottom_sheet_medicamento, null);
 
-        EditText editNombre = bottomSheetView.findViewById(R.id.editNombre);
-        EditText editDosis = bottomSheetView.findViewById(R.id.editDosis);
-        EditText editFechaCaducidad = bottomSheetView.findViewById(R.id.editFechaCaducidad);
-        Spinner spinnerTipo = bottomSheetView.findViewById(R.id.spinnerTipo);
-        Spinner spinnerUnidad = bottomSheetView.findViewById(R.id.spinnerUnidad);
-        Button btnGuardar = bottomSheetView.findViewById(R.id.btnGuardar);
+        EditText editNombre = view.findViewById(R.id.editNombre);
+        EditText editDosis = view.findViewById(R.id.editDosis);
+        EditText editFecha = view.findViewById(R.id.editFechaCaducidad);
+        Spinner spinnerTipo = view.findViewById(R.id.spinnerTipo);
+        Spinner spinnerUnidad = view.findViewById(R.id.spinnerUnidad);
+        Button btnGuardar = view.findViewById(R.id.btnGuardar);
 
-        ArrayAdapter<CharSequence> adapterTipo = ArrayAdapter.createFromResource(this,
-                R.array.tipos_medicamentos, android.R.layout.simple_spinner_item);
+        ArrayAdapter<CharSequence> adapterTipo = ArrayAdapter.createFromResource(this, R.array.tipos_medicamentos, android.R.layout.simple_spinner_item);
         adapterTipo.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerTipo.setAdapter(adapterTipo);
 
-        ArrayAdapter<CharSequence> adapterUnidad = ArrayAdapter.createFromResource(this,
-                R.array.unidades_dosis, android.R.layout.simple_spinner_item);
+        ArrayAdapter<CharSequence> adapterUnidad = ArrayAdapter.createFromResource(this, R.array.unidades_dosis, android.R.layout.simple_spinner_item);
         adapterUnidad.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerUnidad.setAdapter(adapterUnidad);
 
-        Runnable validarFormulario = () -> {
-            boolean completo = !editNombre.getText().toString().trim().isEmpty()
-                    && !editDosis.getText().toString().trim().isEmpty()
-                    && !editFechaCaducidad.getText().toString().trim().isEmpty()
-                    && spinnerTipo.getSelectedItemPosition() >= 0
-                    && spinnerUnidad.getSelectedItemPosition() >= 0;
-
-            btnGuardar.setEnabled(completo);
-            btnGuardar.setBackgroundTintList(getResources().getColorStateList(
-                    completo ? android.R.color.holo_green_dark : android.R.color.darker_gray
-            ));
-        };
-
-        TextWatcher watcher = new TextWatcher() {
-            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-            @Override public void afterTextChanged(Editable s) {}
-            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
-                validarFormulario.run();
-            }
-        };
-
-        editNombre.addTextChangedListener(watcher);
-        editDosis.addTextChangedListener(watcher);
-        editFechaCaducidad.addTextChangedListener(watcher);
-
-        spinnerTipo.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                validarFormulario.run();
-            }
-            public void onNothingSelected(AdapterView<?> parent) {}
-        });
-
-        spinnerUnidad.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                validarFormulario.run();
-            }
-            public void onNothingSelected(AdapterView<?> parent) {}
-        });
-
         btnGuardar.setOnClickListener(v -> {
-            if (btnGuardar.isEnabled()) {
-                String nombre = editNombre.getText().toString().trim();
-                String dosis = editDosis.getText().toString().trim();
-                String unidad = spinnerUnidad.getSelectedItem().toString();
-                String fecha = editFechaCaducidad.getText().toString().trim();
-                String tipo = spinnerTipo.getSelectedItem().toString();
+            String nombre = editNombre.getText().toString().trim();
+            String dosis = editDosis.getText().toString().trim();
+            String fecha = editFecha.getText().toString().trim();
+            String tipo = spinnerTipo.getSelectedItem().toString();
+            String unidad = spinnerUnidad.getSelectedItem().toString();
 
-                Medicamento nuevoMedicamento = new Medicamento(nombre, dosis, unidad, fecha, tipo);
-                guardarMedicamento(nuevoMedicamento);
-
-                // Actualiza RecyclerView en tiempo real
-                listaMedicamentos.add(nuevoMedicamento);
+            if (!nombre.isEmpty() && !dosis.isEmpty() && !fecha.isEmpty()) {
+                Medicamento nuevo = new Medicamento(nombre, dosis, unidad, fecha, tipo);
+                guardarMedicamento(nuevo);
+                listaMedicamentos.add(nuevo);
                 adapter.notifyItemInserted(listaMedicamentos.size() - 1);
-
-                Toast.makeText(Medicamentos.this, "Guardado: " + nuevoMedicamento.getNombre(), Toast.LENGTH_SHORT).show();
-                bottomSheetDialog.dismiss();
+                dialog.dismiss();
             } else {
-                Toast.makeText(Medicamentos.this, "Por favor, completa todos los campos", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Completa todos los campos", Toast.LENGTH_SHORT).show();
             }
         });
 
-        bottomSheetDialog.setContentView(bottomSheetView);
-        bottomSheetDialog.show();
+        dialog.setContentView(view);
+        dialog.show();
+    }
+
+    private void mostrarFormularioEditar(int posicion) {
+        BottomSheetDialog dialog = new BottomSheetDialog(this);
+        View view = LayoutInflater.from(this).inflate(R.layout.bottom_sheet_editar_medicamento, null);
+
+        EditText editNombre = view.findViewById(R.id.editNombre);
+        EditText editDosis = view.findViewById(R.id.editDosis);
+        EditText editFecha = view.findViewById(R.id.editFechaCaducidad);
+        Spinner spinnerTipo = view.findViewById(R.id.spinnerTipo);
+        Spinner spinnerUnidad = view.findViewById(R.id.spinnerUnidad);
+        Button btnModificar = view.findViewById(R.id.btnModificar);
+        Button btnEliminar = view.findViewById(R.id.btnEliminar);
+
+        ArrayAdapter<CharSequence> adapterTipo = ArrayAdapter.createFromResource(this, R.array.tipos_medicamentos, android.R.layout.simple_spinner_item);
+        adapterTipo.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerTipo.setAdapter(adapterTipo);
+
+        ArrayAdapter<CharSequence> adapterUnidad = ArrayAdapter.createFromResource(this, R.array.unidades_dosis, android.R.layout.simple_spinner_item);
+        adapterUnidad.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerUnidad.setAdapter(adapterUnidad);
+
+        Medicamento m = listaMedicamentos.get(posicion);
+        editNombre.setText(m.getNombre());
+        editDosis.setText(m.getDosis());
+        editFecha.setText(m.getFecha());
+        spinnerTipo.setSelection(adapterTipo.getPosition(m.getTipo()));
+        spinnerUnidad.setSelection(adapterUnidad.getPosition(m.getUnidad()));
+
+        btnModificar.setOnClickListener(v -> {
+            String nombre = editNombre.getText().toString().trim();
+            String dosis = editDosis.getText().toString().trim();
+            String fecha = editFecha.getText().toString().trim();
+            String tipo = spinnerTipo.getSelectedItem().toString();
+            String unidad = spinnerUnidad.getSelectedItem().toString();
+
+            if (!nombre.isEmpty() && !dosis.isEmpty() && !fecha.isEmpty()) {
+                Medicamento actualizado = new Medicamento(nombre, dosis, unidad, fecha, tipo);
+                listaMedicamentos.set(posicion, actualizado);
+                guardarListaActualizada();
+                adapter.notifyItemChanged(posicion);
+                dialog.dismiss();
+            } else {
+                Toast.makeText(this, "Completa todos los campos", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        btnEliminar.setOnClickListener(v -> {
+            new AlertDialog.Builder(this)
+                    .setTitle("¿Eliminar medicamento?")
+                    .setMessage("Esta acción no se puede deshacer.")
+                    .setPositiveButton("Sí", (d, w) -> {
+                        listaMedicamentos.remove(posicion);
+                        guardarListaActualizada();
+                        adapter.notifyItemRemoved(posicion);
+                        dialog.dismiss();
+                    })
+                    .setNegativeButton("No", null)
+                    .show();
+        });
+
+        dialog.setContentView(view);
+        dialog.show();
     }
 
     @Override
@@ -200,12 +189,10 @@ public class Medicamentos extends AppCompatActivity {
     private void guardarMedicamento(Medicamento nuevoMedicamento) {
         SharedPreferences prefs = getSharedPreferences("medicamentos", MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
-
         Gson gson = new Gson();
         String jsonGuardado = prefs.getString("lista", null);
 
         ArrayList<Medicamento> lista;
-
         if (jsonGuardado != null) {
             Type tipoLista = new TypeToken<ArrayList<Medicamento>>() {}.getType();
             lista = gson.fromJson(jsonGuardado, tipoLista);
