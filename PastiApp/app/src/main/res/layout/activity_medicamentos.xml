@@ -52,7 +52,7 @@
             tools:listitem="@layout/medicamento_item" />
 
         <Button
-            android:id="@+id/buttonAdd"
+            android:id="@+id/buttonAddH"
             android:layout_width="90dp"
             android:layout_height="90dp"
             android:layout_margin="16dp"

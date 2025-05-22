@@ -3,8 +3,6 @@ package com.example.pastiapp;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.*;
@@ -42,7 +40,7 @@ public class Medicamentos extends AppCompatActivity {
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
         button12 = findViewById(R.id.button12);
-        buttonAdd = findViewById(R.id.buttonAdd);
+        buttonAdd = findViewById(R.id.buttonAddH);
 
         button12.setOnClickListener(v -> drawerLayout.openDrawer(GravityCompat.START));
         buttonAdd.setOnClickListener(v -> mostrarFormularioAgregar());

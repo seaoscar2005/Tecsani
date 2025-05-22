@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layoutRootAgenda"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="20dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Selecciona un medicamento"
+        android:textStyle="bold" />
+
+    <Spinner
+        android:id="@+id/spinnerMedicamentos"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:spinnerMode="dropdown" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Frecuencia"
+        android:textStyle="bold"
+        android:layout_marginTop="12dp" />
+
+    <EditText
+        android:id="@+id/editFrecuencia"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Cada cuántas horas o días"
+        android:inputType="number" />
+
+    <RadioGroup
+        android:id="@+id/radioGroupFrecuencia"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="8dp">
+
+        <RadioButton
+            android:id="@+id/radioHoras"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Por horas" />
+
+        <RadioButton
+            android:id="@+id/radioDias"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Por días" />
+    </RadioGroup>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Duración (en días)"
+        android:textStyle="bold"
+        android:layout_marginTop="12dp" />
+
+    <EditText
+        android:id="@+id/editDuracionDias"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Número de días"
+        android:inputType="number" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Hora de inicio medicamento"
+        android:textStyle="bold"
+        android:layout_marginTop="12dp" />
+
+    <EditText
+        android:id="@+id/editHoraInicio"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Ej: 08:00"
+        android:focusable="false"
+        android:clickable="true" />
+
+    <Button
+        android:id="@+id/btnAgregarAgenda"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Agregar"
+        android:layout_marginTop="20dp"
+        android:backgroundTint="@android:color/holo_blue_light"
+        android:textColor="@android:color/white" />
+</LinearLayout>
+
+
